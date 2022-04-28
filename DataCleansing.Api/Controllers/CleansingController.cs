@@ -15,7 +15,8 @@ namespace DataCleansing.Api.Controllers
         public void UploadFile()
         {
             var fileName = Request.Form.Files[0].FileName;
-            var directoryPath = Path.Combine("/", @"C:\Users\aleksandargl\Desktop\FilesToBeCleaned");
+            var basePath = Startup.StaticConfig["BasePath"];
+            var directoryPath = Path.Combine("/", basePath);
 
             if (!Directory.Exists(directoryPath))
             {
@@ -36,7 +37,7 @@ namespace DataCleansing.Api.Controllers
         [Route("download")]
         public IActionResult Download(string fileName)
         {
-            var directoryPath = Path.Combine("/", @"C:\Users\aleksandargl\Desktop\FilesToBeCleaned");
+            var directoryPath = Path.Combine("/", @"C:\Users\jovanak\Desktop\FilesToBeCleaned");
             var filePath = Path.Combine(directoryPath, "DataSample.xlsx");
 
             var wb = new Workbook(filePath);
