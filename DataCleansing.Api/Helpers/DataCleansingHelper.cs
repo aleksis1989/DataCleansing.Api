@@ -43,8 +43,6 @@ namespace DataCleansing.Api.Helpers
 
             var ws = GetDocumentColumnWorksheet(filePath);
 
-            //var dt = ws.Cells.ExportDataTable(1, 0, rows, columns);
-
             var rng = ws.Cells.MaxDisplayRange;
             var dt = ws.Cells.ExportDataTable(
                 rng.FirstRow, // Може да биде инпут параметар да го размислиме
@@ -64,18 +62,18 @@ namespace DataCleansing.Api.Helpers
                     var columnName = columnStats.Select(x => x.ColumnName).FirstOrDefault();
                     if (columnName != null)
                     {
-                        RemoveDuplicateRows(dt, columnName);
+                        dt = RemoveDuplicateRows(dt, columnName);
                     }
                 }
 
                 if (operationType.OperationTypeId == (int)CleansingMethodEnum.RemoveEmptyRows && operationType.IsForCleansing)
                 {
-                    RemoveEmptyRows(dt);
+                    dt = RemoveEmptyRows(dt);
                 }
 
                 if (operationType.OperationTypeId == (int)CleansingMethodEnum.EmptySpaces && operationType.IsForCleansing)
                 {
-                    CleanWhiteSpaces(dt);
+                    dt = CleanWhiteSpaces(dt);
                 }
 
                 if (operationType.IsForCleansing && operationType.OperationTypeId == (int)CleansingMethodEnum.DateFormat)
