@@ -199,7 +199,6 @@ namespace DataCleansing.Api.Helpers
                 dTable.Rows.InsertAt(dTable.NewRow(), index);
             }
 
-
             return dTable;
         }
 
