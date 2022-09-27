@@ -11,5 +11,7 @@
         public decimal DecimalPercentage { get; set; }
 
         public decimal DatePercentage  { get; set; }
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Aspose.Cells;
 using DataCleansing.Api.Helpers;
 using DataCleansing.Api.ViewModels;
@@ -35,10 +36,15 @@ namespace DataCleansing.Api.Controllers
 
         [HttpPost, DisableRequestSizeLimit]
         [Route("download")]
-        public IActionResult Download(string fileName)
+        public IActionResult Download(CleanedFileNameViewModel viewModel)
         {
-            var directoryPath = Path.Combine("/", @"C:\Users\jovanak\Desktop\FilesToBeCleaned");
-            var filePath = Path.Combine(directoryPath, "DataSample.xlsx");
+            //var basePath = Startup.StaticConfig["BasePath"];
+            //var directoryPath = Path.Combine("/", basePath);
+
+            var basePath = Startup.StaticConfig["BasePath"];
+
+            var fileName = viewModel.FileName + ".xlsx";
+            var filePath = Path.Combine(basePath, fileName);
 
             var wb = new Workbook(filePath);
             var ms = new MemoryStream();
@@ -47,10 +53,7 @@ namespace DataCleansing.Api.Controllers
             wb.Save(ms, saveFormat);
 
             var content = ms.ToArray();
-            return File(
-                content,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                "users.xlsx");
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", viewModel.FileName + ".xls");
         }
 
         [HttpPost]
@@ -58,6 +61,22 @@ namespace DataCleansing.Api.Controllers
         public IActionResult GetDocumentColumnStatistic(FileViewModel model)
         {
             var result = DataCleansingHelper.GetDocumentColumnStatistic(model.FileName);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetCleansingMethods")]
+        public IActionResult GetCleansingMethods()
+        {
+            var result = DataCleansingHelper.GetCleansingMethods();
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("CleanFile")]
+        public IActionResult CleanFile(CleansingViewModel cleansingViewModel)
+        {
+            var result = DataCleansingHelper.CleanFile(cleansingViewModel);
             return Ok(result);
         }
     }

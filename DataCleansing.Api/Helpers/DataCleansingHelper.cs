@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Aspose.Cells;
+using DataCleansing.Api.Enums;
 using DataCleansing.Api.ViewModels;
 
 namespace DataCleansing.Api.Helpers
@@ -34,29 +36,82 @@ namespace DataCleansing.Api.Helpers
             return columnStats;
         }
 
-        public static void ReadExcel()
+        public static CleanedFileNameViewModel CleanFile(CleansingViewModel cleansingViewModel)
         {
             var basePath = Startup.StaticConfig["BasePath"];
+            var filePath = Path.Combine(basePath, cleansingViewModel.FileName);
 
-            var fullPathToExcel = @"C:\Users\aleksandargl\Desktop\Timska\DataSample.xlsx"; //ie C:\Temp\YourExcel.xls
-            var ws = GetDocumentColumnWorksheet(fullPathToExcel);
-           
+            var ws = GetDocumentColumnWorksheet(filePath);
+
             //var dt = ws.Cells.ExportDataTable(1, 0, rows, columns);
 
             var rng = ws.Cells.MaxDisplayRange;
             var dt = ws.Cells.ExportDataTable(
                 rng.FirstRow, // Може да биде инпут параметар да го размислиме
                 rng.FirstColumn, // Може да биде инпут параметар да го размислиме
-                rng.RowCount, 
-                rng.ColumnCount, 
+                rng.RowCount,
+                rng.ColumnCount,
                 true);
-            
+
+            dt.TableName = "Му Document";
+
+            var columnStats = GetDocumentColumnsStatistic(ws);
+
+            foreach (var operationType in cleansingViewModel.OperationTypes)
+            {
+                if (operationType.IsForCleansing &&
+                    operationType.OperationTypeId == (int)CleansingMethodEnum.DateFormat)
+                {
+                    var columnsWithDate = columnStats.Where(x => x.DatePercentage > 0)
+                        .Select(x => x.ColumnName)
+                        .ToList();
+                    foreach (var columnName in columnsWithDate)
+                    {
+                        var columnId = GetColumnIndex(ws, columnName);
+                        FixDateFormat(dt, columnId, operationType.SelectedDateFormat);
+                    }
+                }
+            }
+
+            var fileNameParts = cleansingViewModel.FileName.Split('.');
+
+            var cleanedFileName = fileNameParts[0] + "_cleaned";
+
+            SaveDataTableAsExcelFile(dt, cleanedFileName);
+
+            var result = new CleanedFileNameViewModel
+            {
+                FileName = cleanedFileName
+            };
+
+            return result;
+        }
+
+        public static void ReadExcel()
+        {
+            var basePath = Startup.StaticConfig["BasePath"];
+
+            var fullPathToExcel = @"C:\Users\aleksandargl\Desktop\Timska\DataSample.xlsx"; //ie C:\Temp\YourExcel.xls
+            var ws = GetDocumentColumnWorksheet(fullPathToExcel);
+
+            //var dt = ws.Cells.ExportDataTable(1, 0, rows, columns);
+
+            var rng = ws.Cells.MaxDisplayRange;
+            var dt = ws.Cells.ExportDataTable(
+                rng.FirstRow, // Може да биде инпут параметар да го размислиме
+                rng.FirstColumn, // Може да биде инпут параметар да го размислиме
+                rng.RowCount,
+                rng.ColumnCount,
+                true);
+
             dt.TableName = "Му Document";
 
             var columnStats = GetDocumentColumnsStatistic(ws);
 
             var columnId = GetColumnIndex(ws, "Датум на креирање");
             var fixDateValue = FixDateFormat(dt, columnId, "dd.MM.yyyy");
+            
+            
             SaveDataTableAsExcelFile(fixDateValue, "fixDateFormats");
 
             //var dtWhiteSpaces = CleanWhiteSpaces(dt);
@@ -187,21 +242,21 @@ namespace DataCleansing.Api.Helpers
             {
                 //for (int h = 0; h < dt.Columns.Count; h++)
                 //{
-                    if (dt.Rows[k][columnId] is string)
+                if (dt.Rows[k][columnId] is string)
+                {
+                    try
                     {
-                        try
+                        var fixedDate = FixDataFormatHelper(dt.Rows[k][columnId].ToString(), dateFormat);
+                        if (fixedDate.ToString(CultureInfo.InvariantCulture) != DateTime.MinValue.ToString(CultureInfo.InvariantCulture))
                         {
-                            var fixedDate = FixDataFormatHelper(dt.Rows[k][columnId].ToString(), dateFormat);
-                            if (fixedDate.ToString(CultureInfo.InvariantCulture) != DateTime.MinValue.ToString(CultureInfo.InvariantCulture))
-                            {
-                                dt.Rows[k][columnId] = fixedDate;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
+                            dt.Rows[k][columnId] = fixedDate;
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                }
                 //}
             }
 
@@ -257,9 +312,13 @@ namespace DataCleansing.Api.Helpers
 
             dataTableWorksheet.AutoFitColumns();
 
-            var fileLocation = @"C:\Users\aleksandargl\Desktop\";
+            //var fileLocation = @"C:\Users\aleksandargl\Desktop\";
 
-            workbookForDataTable.Save(fileLocation + fileName + ".xlsx");
+            var basePath = Startup.StaticConfig["BasePath"];
+
+            var cleanedFilePath = Path.Combine(basePath, fileName);
+
+            workbookForDataTable.Save(cleanedFilePath + ".xlsx");
         }
 
         /// <summary>
@@ -539,6 +598,42 @@ namespace DataCleansing.Api.Helpers
             }
 
             return columnId;
+        }
+
+        public static List<OperationTypeViewModel> GetCleansingMethods()
+        {
+            var result = new List<OperationTypeViewModel>
+            {
+                new OperationTypeViewModel
+                {
+                    OperationTypeId = (int)CleansingMethodEnum.DuplicateRows,
+                    OperationTypeName = "DuplicateRows",
+                    DateFormats = new List<string>(),
+                    SelectedDateFormat = string.Empty
+                },
+                new OperationTypeViewModel
+                {
+                    OperationTypeId = (int)CleansingMethodEnum.DuplicateRows,
+                    OperationTypeName = "EmptySpaces",
+                    DateFormats = new List<string>(),
+                    SelectedDateFormat = string.Empty
+                },
+                new OperationTypeViewModel
+                {
+                    OperationTypeId = (int)CleansingMethodEnum.DateFormat,
+                    OperationTypeName = "FixDateFormat",
+                    DateFormats = new List<string>
+                    {
+                        "dd.MM.yyyy",
+                        "yyyy-MM-dd",
+                        "yyyy/MM/dd HH:mm",
+                        "M/d/yy"
+                    },
+                    SelectedDateFormat = string.Empty
+                }
+            };
+
+            return result;
         }
     }
 }
