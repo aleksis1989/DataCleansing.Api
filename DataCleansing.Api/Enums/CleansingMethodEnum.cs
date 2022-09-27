@@ -6,6 +6,8 @@
 
         EmptySpaces = 2,
 
-        DateFormat = 3
+        DateFormat = 3,
+
+        RemoveEmptyRows = 4
     }
 }

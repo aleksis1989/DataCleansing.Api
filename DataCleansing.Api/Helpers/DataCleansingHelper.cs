@@ -53,14 +53,32 @@ namespace DataCleansing.Api.Helpers
                 rng.ColumnCount,
                 true);
 
-            dt.TableName = "Му Document";
+            dt.TableName = cleansingViewModel.FileName;
 
             var columnStats = GetDocumentColumnsStatistic(ws);
 
             foreach (var operationType in cleansingViewModel.OperationTypes)
             {
-                if (operationType.IsForCleansing &&
-                    operationType.OperationTypeId == (int)CleansingMethodEnum.DateFormat)
+                if (operationType.OperationTypeId == (int)CleansingMethodEnum.DuplicateRows && operationType.IsForCleansing)
+                {
+                    var columnName = columnStats.Select(x => x.ColumnName).FirstOrDefault();
+                    if (columnName != null)
+                    {
+                        RemoveDuplicateRows(dt, columnName);
+                    }
+                }
+
+                if (operationType.OperationTypeId == (int)CleansingMethodEnum.RemoveEmptyRows && operationType.IsForCleansing)
+                {
+                    RemoveEmptyRows(dt);
+                }
+
+                if (operationType.OperationTypeId == (int)CleansingMethodEnum.EmptySpaces && operationType.IsForCleansing)
+                {
+                    CleanWhiteSpaces(dt);
+                }
+
+                if (operationType.IsForCleansing && operationType.OperationTypeId == (int)CleansingMethodEnum.DateFormat)
                 {
                     var columnsWithDate = columnStats.Where(x => x.DatePercentage > 0)
                         .Select(x => x.ColumnName)
@@ -110,8 +128,8 @@ namespace DataCleansing.Api.Helpers
 
             var columnId = GetColumnIndex(ws, "Датум на креирање");
             var fixDateValue = FixDateFormat(dt, columnId, "dd.MM.yyyy");
-            
-            
+
+
             SaveDataTableAsExcelFile(fixDateValue, "fixDateFormats");
 
             //var dtWhiteSpaces = CleanWhiteSpaces(dt);
@@ -613,8 +631,15 @@ namespace DataCleansing.Api.Helpers
                 },
                 new OperationTypeViewModel
                 {
-                    OperationTypeId = (int)CleansingMethodEnum.DuplicateRows,
+                    OperationTypeId = (int)CleansingMethodEnum.EmptySpaces,
                     OperationTypeName = "EmptySpaces",
+                    DateFormats = new List<string>(),
+                    SelectedDateFormat = string.Empty
+                },
+                new OperationTypeViewModel
+                {
+                    OperationTypeId = (int)CleansingMethodEnum.RemoveEmptyRows,
+                    OperationTypeName = "RemoveEmptyRows",
                     DateFormats = new List<string>(),
                     SelectedDateFormat = string.Empty
                 },
