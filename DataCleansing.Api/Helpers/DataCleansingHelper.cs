@@ -406,6 +406,7 @@ namespace DataCleansing.Api.Helpers
             }
 
             var result = (decimalCounter / rows) * 100;
+            result = decimal.Round(result, 2, MidpointRounding.AwayFromZero);
             return result;
         }
 
@@ -444,6 +445,7 @@ namespace DataCleansing.Api.Helpers
             }
 
             var result = (integerCounter / rows) * 100;
+            result = decimal.Round(result, 2, MidpointRounding.AwayFromZero);
             return result;
         }
 
@@ -485,7 +487,8 @@ namespace DataCleansing.Api.Helpers
             }
 
             var result = (dateTimeCounter / rows) * 100;
-            return result;
+            result = decimal.Round(result, 2, MidpointRounding.AwayFromZero);
+            return result ;
         }
 
         /// <summary>
