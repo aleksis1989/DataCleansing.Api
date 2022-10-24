@@ -136,7 +136,7 @@ namespace DataCleansing.Services.Implementations
                 (int) CleansingFirstNameStatusEnum.ManualCorrection
             };
 
-            switch (searchModel.CleansingStreetStatusId)
+            switch (searchModel.CleansingFirstNameStatusId)
             {
                 case (int)CleansingFirstNameStatusEnum.AcceptSuggestion:
                 case (int)CleansingFirstNameStatusEnum.AcceptSimilarity:
@@ -144,7 +144,7 @@ namespace DataCleansing.Services.Implementations
                 case (int)CleansingFirstNameStatusEnum.ManualCorrection:
                 case (int)CleansingFirstNameStatusEnum.Rejected:
                     query = query.Where(x => x.CleansingFirstNameStatus != null &&
-                                             x.CleansingFirstNameStatus.Id == searchModel.CleansingStreetStatusId);
+                                             x.CleansingFirstNameStatus.Id == searchModel.CleansingFirstNameStatusId);
                     break;
                 case (int)CleansingFirstNameStatusEnum.NonProcessed:
                     query = query.Where(x => x.CleansingFirstNameStatus == null);

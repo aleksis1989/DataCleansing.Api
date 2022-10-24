@@ -6,7 +6,7 @@
 
         public int SimilarityTypeId { get; set; }
 
-        public int CleansingStreetStatusId { get; set; }
+        public int CleansingFirstNameStatusId { get; set; }
 
         public int CleansingFirstNameRowFilter { get; set; }
     }
