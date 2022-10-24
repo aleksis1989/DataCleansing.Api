@@ -106,16 +106,6 @@ namespace DataCleansing.Services.Implementations
             }
         }
 
-        public string Test()
-        {
-            using (new UnitOfWorkScope())
-            {
-                var item = _cleansingFirstNameRepository.Get(9);
-
-                return item.FirstName;
-            }
-        }
-
         private IQueryable<CleansingFirstName> FilterCleansingFirstNames(IQueryable<CleansingFirstName> query, CleansingFirstNameSearchModel searchModel)
         {
             if (!string.IsNullOrEmpty(searchModel.FirstName))
