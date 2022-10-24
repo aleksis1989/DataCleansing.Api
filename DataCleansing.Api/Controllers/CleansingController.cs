@@ -90,8 +90,8 @@ namespace DataCleansing.Api.Controllers
         }
 
         [HttpPost]
-        [Route("FilterCleansingStreetInGrid")]
-        public IActionResult FilterCleansingStreetInGrid(CleansingFirstNameSearchModel searchModel)
+        [Route("FilterCleansingFirstNamesInGrid")]
+        public IActionResult FilterCleansingFirstNamesInGrid(CleansingFirstNameSearchModel searchModel)
         {
             var result = _cleansingFirstNameService.FilterCleansingFirstNamesInGrid(searchModel);
             return Ok(result);
