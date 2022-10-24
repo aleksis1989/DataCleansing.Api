@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="DataCleansing.Core.Domain"
+                   assembly="DataCleansing.Core">
+
+  <class name="CleansingFirstName" table="CleansingFirstName" schema="dbo">
+
+    <cache usage="read-write" />
+
+    <id name="Id" unsaved-value="0">
+      <column name="CleansingFirstNameID" sql-type="int" not-null="true" />
+      <generator class="identity" />
+    </id>
+
+    <property name="PersonId">
+      <column name="PersonID" sql-type="int" not-null="true"></column>
+    </property>
+
+    <property name="FirstName">
+      <column name="FirstName" sql-type="nvarchar(50)" not-null="true"></column>
+    </property>
+
+    <property name="Levenshtein">
+      <column name="Levenshtein" sql-type="decimal" not-null="false"></column>
+    </property>
+
+    <property name="LevenshteinFirstName">
+      <column name="LevenshteinFirstName" sql-type="nvarchar" not-null="false"></column>
+    </property>
+
+    <property name="Jaccard">
+      <column name="Jaccard" sql-type="decimal" not-null="false"></column>
+    </property>
+
+    <property name="JaccardFirstName">
+      <column name="JaccardFirstName" sql-type="nvarchar" not-null="false"></column>
+    </property>
+
+    <property name="JaroWinkler">
+      <column name="JaroWinkler" sql-type="decimal" not-null="false"></column>
+    </property>
+
+    <property name="JaroWinklerFirstName">
+      <column name="JaroWinklerFirstName" sql-type="nvarchar" not-null="false"></column>
+    </property>
+
+    <property name="LongestCommonSubsequence">
+      <column name="LongestCommonSubsequence" sql-type="decimal" not-null="false"></column>
+    </property>
+
+    <property name="LongestCommonSubsequenceFirstName">
+      <column name="LongestCommonSubsequenceFirstName" sql-type="nvarchar" not-null="false"></column>
+    </property>
+
+    <many-to-one name="SimilarityType" class="SimilarityType">
+      <column name="SimilarityTypeID" not-null="false" sql-type="int"></column>
+    </many-to-one>
+
+    <property name="SimilarityFirstNameId">
+      <column name="SimilarityFirstNameID" sql-type="int" not-null="false"></column>
+    </property>
+
+    <property name="SimilarityFirstName">
+      <column name="SimilarityFirstName" sql-type="nvarchar" not-null="false"></column>
+    </property>
+
+    <property name="ManualFirstNameId">
+      <column name="ManualFirstNameID" sql-type="int" not-null="false"></column>
+    </property>
+
+    <property name="ManualFirstName">
+      <column name="ManualFirstName" sql-type="nvarchar" not-null="false"></column>
+    </property>
+
+    <many-to-one name="CleansingFirstNameStatus" class="CleansingFirstNameStatus">
+      <column name="CleansingFirstNameStatusID" not-null="false" sql-type="int"></column>
+    </many-to-one>
+
+  </class>
+
+  <sql-query name="GetCleansingFirstNameReport">
+    EXEC [dbo].[CleansingStreetReport]
+  </sql-query>
+
+</hibernate-mapping>

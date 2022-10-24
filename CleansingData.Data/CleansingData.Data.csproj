@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Mappings\CleansingFirstName.hbm.xml" />
+    <None Remove="Mappings\CleansingFirstNameStatus.hbm.xml" />
+    <None Remove="Mappings\KnowlegeFirstName.hbm.xml" />
+    <None Remove="Mappings\SimilarityType.hbm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Mappings\CleansingFirstNameStatus.hbm.xml" />
+    <EmbeddedResource Include="Mappings\KnowlegeFirstName.hbm.xml" />
+    <EmbeddedResource Include="Mappings\SimilarityType.hbm.xml" />
+    <EmbeddedResource Include="Mappings\CleansingFirstName.hbm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataCleansing.Base\DataCleansing.Base.csproj" />
+    <ProjectReference Include="..\DataCleansing.Core\DataCleansing.Core.csproj" />
+  </ItemGroup>
+
+</Project>

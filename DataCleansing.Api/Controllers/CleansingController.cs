@@ -3,6 +3,8 @@ using System.IO;
 using Aspose.Cells;
 using DataCleansing.Api.Helpers;
 using DataCleansing.Api.ViewModels;
+using DataCleansing.Services.Interfaces;
+using DataCleansing.Services.ViewModels.Search;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataCleansing.Api.Controllers
@@ -11,6 +13,13 @@ namespace DataCleansing.Api.Controllers
     [Route("[controller]")]
     public class CleansingController : ControllerBase
     {
+        private readonly ICleansingFirstNameService _cleansingFirstNameService;
+
+        public CleansingController(ICleansingFirstNameService cleansingFirstNameService)
+        {
+            _cleansingFirstNameService = cleansingFirstNameService;
+        }
+
         [HttpPost, DisableRequestSizeLimit]
         [Route("Upload")]
         public void UploadFile()
@@ -77,6 +86,38 @@ namespace DataCleansing.Api.Controllers
         public IActionResult CleanFile(CleansingViewModel cleansingViewModel)
         {
             var result = DataCleansingHelper.CleanFile(cleansingViewModel);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("FilterCleansingStreetInGrid")]
+        public IActionResult FilterCleansingStreetInGrid(CleansingFirstNameSearchModel searchModel)
+        {
+            var result = _cleansingFirstNameService.FilterCleansingFirstNamesInGrid(searchModel);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetFirstNameForCleansingById")]
+        public IActionResult GetFirstNameForCleansingById(int id = 0)
+        {
+            var result = _cleansingFirstNameService.GetFirstNameForCleansingById(id);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetAllFirstNames")]
+        public IActionResult GetAllFirstNames()
+        {
+            var result = _cleansingFirstNameService.GetAllFirstNames();
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetCleansingFirstNameReport")]
+        public IActionResult GetCleansingFirstNameReport()
+        {
+            var result = _cleansingFirstNameService.GetCleansingFirstNameReport();
             return Ok(result);
         }
     }

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DataCleansing.Base\DataCleansing.Base.csproj" />
+    <ProjectReference Include="..\DataCleansing.Core\DataCleansing.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,3 +1,4 @@
+using DataCleansing.Base;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,9 @@ namespace DataCleansing.Api
             });
 
             services.AddControllers().AddNewtonsoftJson();
+
+            services.AddAppDependencies();
+            services.AddHttpContextAccessor();
 
             services.AddCors();
         }
