@@ -13,5 +13,9 @@ namespace DataCleansing.Services.Interfaces
         List<KeyValue<int, string>> GetAllFirstNames();
 
         CleansingFirstNameReportModel GetCleansingFirstNameReport();
+
+        void MergeFirstName(MergeFirstNameViewModel viewModel);
+
+        void RejectMergeFirstName(int id);
     }
 }

@@ -106,6 +106,16 @@ namespace DataCleansing.Services.Implementations
             }
         }
 
+        public void MergeFirstName(MergeFirstNameViewModel viewModel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RejectMergeFirstName(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         private IQueryable<CleansingFirstName> FilterCleansingFirstNames(IQueryable<CleansingFirstName> query, CleansingFirstNameSearchModel searchModel)
         {
             if (!string.IsNullOrEmpty(searchModel.FirstName))

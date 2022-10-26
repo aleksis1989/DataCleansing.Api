@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Aspose.Cells;
 using DataCleansing.Api.Helpers;
 using DataCleansing.Api.ViewModels;
 using DataCleansing.Services.Interfaces;
+using DataCleansing.Services.ViewModels;
 using DataCleansing.Services.ViewModels.Search;
 using Microsoft.AspNetCore.Mvc;
 
@@ -99,9 +99,9 @@ namespace DataCleansing.Api.Controllers
 
         [HttpPost]
         [Route("GetFirstNameForCleansingById")]
-        public IActionResult GetFirstNameForCleansingById(int id = 0)
+        public IActionResult GetFirstNameForCleansingById(IdentificatorViewModel viewModel)
         {
-            var result = _cleansingFirstNameService.GetFirstNameForCleansingById(id);
+            var result = _cleansingFirstNameService.GetFirstNameForCleansingById(viewModel.Id);
             return Ok(result);
         }
 
@@ -119,6 +119,22 @@ namespace DataCleansing.Api.Controllers
         {
             var result = _cleansingFirstNameService.GetCleansingFirstNameReport();
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("MergeFirstName")]
+        public IActionResult MergeFirstName(MergeFirstNameViewModel viewModel)
+        {
+            _cleansingFirstNameService.MergeFirstName(viewModel);
+            return Ok(true);
+        }
+
+        [HttpPost]
+        [Route("RejectMergeFirstName")]
+        public IActionResult RejectMergeFirstName(IdentificatorViewModel viewModel)
+        {
+            _cleansingFirstNameService.RejectMergeFirstName(viewModel.Id);
+            return Ok(true);
         }
     }
 }
