@@ -13,8 +13,6 @@ namespace DataCleansing.Services.Mappers
             var processedStatuses = new List<int>
             {
                 (int) CleansingFirstNameStatusEnum.AcceptSimilarity,
-                (int) CleansingFirstNameStatusEnum.AcceptPermutation,
-                (int) CleansingFirstNameStatusEnum.AcceptSuggestion,
                 (int) CleansingFirstNameStatusEnum.ManualCorrection
             };
 

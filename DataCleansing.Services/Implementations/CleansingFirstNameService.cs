@@ -20,7 +20,7 @@ namespace DataCleansing.Services.Implementations
         private readonly IRepository<KnowlegeFirstName> _knowledgeFirstNameRepository;
 
         public CleansingFirstNameService(
-            ICleansingFirstNameRepository cleansingFirstNameRepository, 
+            ICleansingFirstNameRepository cleansingFirstNameRepository,
             IRepository<KnowlegeFirstName> knowledgeFirstNameRepository)
         {
             _cleansingFirstNameRepository = cleansingFirstNameRepository;
@@ -108,12 +108,35 @@ namespace DataCleansing.Services.Implementations
 
         public void MergeFirstName(MergeFirstNameViewModel viewModel)
         {
-            throw new NotImplementedException();
+            using (var scope = new UnitOfWorkScope())
+            {
+                _cleansingFirstNameRepository.MergeFirstName(
+                    viewModel.CleansingFirstNameId, 
+                    viewModel.CleansingFirstName.Key,
+                    viewModel.CleansingFirstNameStatusId);
+
+                scope.Commit();
+            }
+        }
+
+        public void UndoMerge(IdentificatorViewModel viewModel)
+        {
+            using (var scope = new UnitOfWorkScope())
+            {
+                _cleansingFirstNameRepository.UndoMergeFirstName(viewModel.Id);
+
+                scope.Commit();
+            }
         }
 
         public void RejectMergeFirstName(int id)
         {
-            throw new NotImplementedException();
+            using (var scope = new UnitOfWorkScope())
+            {
+                _cleansingFirstNameRepository.RejectFirstName(id);
+
+                scope.Commit();
+            }
         }
 
         private IQueryable<CleansingFirstName> FilterCleansingFirstNames(IQueryable<CleansingFirstName> query, CleansingFirstNameSearchModel searchModel)
@@ -128,19 +151,10 @@ namespace DataCleansing.Services.Implementations
                 query = query.Where(x => x.SimilarityType != null && x.SimilarityType.Id == searchModel.SimilarityTypeId);
             }
 
-            var processedRowStatus = new List<int>
-            {
-                (int) CleansingFirstNameStatusEnum.AcceptSuggestion,
-                (int) CleansingFirstNameStatusEnum.AcceptSimilarity,
-                (int) CleansingFirstNameStatusEnum.AcceptPermutation,
-                (int) CleansingFirstNameStatusEnum.ManualCorrection
-            };
 
             switch (searchModel.CleansingFirstNameStatusId)
             {
-                case (int)CleansingFirstNameStatusEnum.AcceptSuggestion:
                 case (int)CleansingFirstNameStatusEnum.AcceptSimilarity:
-                case (int)CleansingFirstNameStatusEnum.AcceptPermutation:
                 case (int)CleansingFirstNameStatusEnum.ManualCorrection:
                 case (int)CleansingFirstNameStatusEnum.Rejected:
                     query = query.Where(x => x.CleansingFirstNameStatus != null &&
@@ -148,10 +162,6 @@ namespace DataCleansing.Services.Implementations
                     break;
                 case (int)CleansingFirstNameStatusEnum.NonProcessed:
                     query = query.Where(x => x.CleansingFirstNameStatus == null);
-                    break;
-                case (int)CleansingFirstNameStatusEnum.Accepted:
-                    query = query.Where(x => x.CleansingFirstNameStatus != null &&
-                                             processedRowStatus.Contains(x.CleansingFirstNameStatus.Id));
                     break;
             }
 

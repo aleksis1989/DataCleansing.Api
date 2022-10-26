@@ -1,39 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DataCleansing.Services.Enums
+﻿namespace DataCleansing.Services.Enums
 {
     /// <summary>
     /// Енумератор за статус за прочиствање на име на лице
     /// </summary>
     public enum CleansingFirstNameStatusEnum
     {
-        // Не процесирани
+        /// <summary>
+        /// Не процесирани
+        /// </summary>
         NonProcessed = 0,
 
-        // Прифатенa сугестија од алгоритамот
-        AcceptSuggestion = 1,
+        /// <summary>
+        /// Прифатенa сугестија од алгоритамот
+        /// </summary>
+        AcceptSimilarity = 1,
 
-        // Прифатено Similarity
-        AcceptSimilarity = 2,
-
-        // Прифатено Permutation
-        AcceptPermutation = 3,
-
-        // Рачна корекција
-        ManualCorrection = 4,
+        /// <summary>
+        /// Рачна корекција
+        /// </summary>
+        ManualCorrection = 2,
 
         /// <summary>
         /// Одбиено прочистување
         /// </summary>
-        Rejected = 5,
-
-        /// <summary>
-        /// Прифатени (Изведен статус)
-        /// </summary>
-        Accepted = 6
+        Rejected = 3,
     }
 }

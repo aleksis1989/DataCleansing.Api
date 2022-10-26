@@ -130,6 +130,14 @@ namespace DataCleansing.Api.Controllers
         }
 
         [HttpPost]
+        [Route("UndoMerge")]
+        public IActionResult UndoMerge(IdentificatorViewModel viewModel)
+        {
+            _cleansingFirstNameService.UndoMerge(viewModel);
+            return Ok(true);
+        }
+
+        [HttpPost]
         [Route("RejectMergeFirstName")]
         public IActionResult RejectMergeFirstName(IdentificatorViewModel viewModel)
         {

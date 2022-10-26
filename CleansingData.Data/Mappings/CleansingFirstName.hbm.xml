@@ -82,4 +82,16 @@
     EXEC [dbo].[CleansingStreetReport]
   </sql-query>
 
+  <sql-query name="MergeFirstName">
+    EXEC [dbo].[MergeFirstName] @CleansingFirstNameID=:cleansingFirstNameId, @KnowlegeFirstNameID=:knowlegeFirstNameId, @CleansingFirstNameStatusID=:cleansingFirstNameStatusId
+  </sql-query>
+
+  <sql-query name="UndoMergeFirstName">
+    EXEC [dbo].[UndoMergeFirstName] @CleansingFirstNameID=:cleansingFirstNameId
+  </sql-query>
+
+  <sql-query name="RejectFirstName">
+    EXEC [dbo].[RejectFirstName] @CleansingFirstNameID=:cleansingFirstNameId
+  </sql-query>
+
 </hibernate-mapping>

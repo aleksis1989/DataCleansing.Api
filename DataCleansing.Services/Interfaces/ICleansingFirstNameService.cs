@@ -16,6 +16,8 @@ namespace DataCleansing.Services.Interfaces
 
         void MergeFirstName(MergeFirstNameViewModel viewModel);
 
+        void UndoMerge(IdentificatorViewModel viewModel);
+
         void RejectMergeFirstName(int id);
     }
 }
