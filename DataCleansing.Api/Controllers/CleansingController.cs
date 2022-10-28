@@ -52,14 +52,13 @@ namespace DataCleansing.Api.Controllers
 
             var basePath = Startup.StaticConfig["BasePath"];
 
-            var fileName = viewModel.FileName + ".xlsx";
+            var fileName = viewModel.FileName + ".xls";
             var filePath = Path.Combine(basePath, fileName);
 
             var wb = new Workbook(filePath);
             var ms = new MemoryStream();
 
-            var saveFormat = (SaveFormat)wb.FileFormat;
-            wb.Save(ms, saveFormat);
+            wb.Save(ms , new XlsSaveOptions(SaveFormat.Excel97To2003));
 
             var content = ms.ToArray();
             return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", viewModel.FileName + ".xls");

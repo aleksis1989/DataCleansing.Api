@@ -59,8 +59,9 @@ namespace DataCleansing.Api.Helpers
             {
                 if (operationType.OperationTypeId == (int)CleansingMethodEnum.DuplicateRows && operationType.IsForCleansing)
                 {
-                    var columnName = columnStats.Select(x => x.ColumnName).FirstOrDefault();
-                    if (columnName != null)
+                    //var columnName = columnStats.Select(x => x.ColumnName).FirstOrDefault();
+                    var columnName = "PersonUIN";
+                    if (!string.IsNullOrEmpty(columnName))
                     {
                         dt = RemoveDuplicateRows(dt, columnName);
                     }
@@ -333,7 +334,7 @@ namespace DataCleansing.Api.Helpers
 
             var cleanedFilePath = Path.Combine(basePath, fileName);
 
-            workbookForDataTable.Save(cleanedFilePath + ".xlsx");
+            workbookForDataTable.Save(cleanedFilePath + ".xls");
         }
 
         /// <summary>
